@@ -2,6 +2,11 @@ name = "wishlist"
 main = "worker/index.ts"
 compatibility_date = "2026-08-01"
 
+# Боевой адрес. Cloudflare сам заводит DNS-запись и сертификат.
+[[routes]]
+pattern = "wishlist.dimadomore.com"
+custom_domain = true
+
 # Статика (собранный Vite-бандл). Worker сам раздаёт файлы,
 # всё что не /api/* и не найдено среди файлов — отдаёт index.html.
 [assets]
