@@ -1,0 +1,579 @@
+/* Стилистика повторяет curated.supply: серо-белая гамма, никаких рамок и теней,
+   разделение поверхностей только тоном. Полный разбор — docs/design-reference.md */
+
+:root {
+  --bg: #f2f2f2;
+  --surface: #ffffff;
+  --surface-subtle: #f5f5f5;
+  --surface-subtle-2: #ebebeb;
+  --border: #e2e2e2;
+  --text: #141414;
+  --text-secondary: #737373;
+  --text-hover: #2e2e2e;
+  --free: #16a34a;
+
+  --font-sans: "Geist Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Geist Mono Variable", ui-monospace, monospace;
+
+  --radius-card: 16px;
+  --radius-img: 8px;
+  --radius-pill: 28px;
+
+  --container: 1400px;
+  --pad: 16px;
+  --gap: 16px;
+  --ease: cubic-bezier(0.44, 0, 0.56, 1);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: 14px;
+  line-height: 20px;
+  letter-spacing: 0.01em;
+  font-weight: 450;
+  -webkit-font-smoothing: antialiased;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+  transition: color 0.4s var(--ease);
+}
+
+button {
+  font: inherit;
+  letter-spacing: inherit;
+  cursor: pointer;
+  border: none;
+  background: none;
+  color: inherit;
+}
+
+input {
+  font: inherit;
+  letter-spacing: inherit;
+}
+
+.container {
+  max-width: var(--container);
+  margin: 0 auto;
+  padding: 0 var(--pad);
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* ── Hero ───────────────────────────────────────────────────────────── */
+
+.hero {
+  padding: 96px 0 56px;
+  text-align: center;
+}
+
+.hero__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 36px;
+  padding: 0 14px;
+  border-radius: var(--radius-pill);
+  background: var(--surface);
+  color: var(--text-secondary);
+  margin-bottom: 24px;
+}
+
+.hero__dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--free);
+}
+
+.hero h1 {
+  margin: 0;
+  font-size: 40px;
+  line-height: 44px;
+  font-weight: 520;
+  letter-spacing: -0.02em;
+}
+
+.hero p {
+  max-width: 540px;
+  margin: 16px auto 0;
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 400;
+  color: var(--text-secondary);
+}
+
+/* ── Сетка товаров ──────────────────────────────────────────────────── */
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(340px, 100%), 1fr));
+  gap: var(--gap);
+  padding-bottom: 64px;
+}
+
+.card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background: var(--surface);
+  border-radius: var(--radius-card);
+}
+
+.card__media {
+  display: block;
+  padding: 24px 16px 8px;
+}
+
+.card__media img {
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: contain;
+  border-radius: var(--radius-img);
+  transition:
+    transform 0.4s var(--ease),
+    opacity 0.4s var(--ease);
+}
+
+.card:hover .card__media img {
+  transform: translateY(3px);
+}
+
+.card--taken .card__media img {
+  opacity: 0.45;
+}
+
+.card__body {
+  display: block;
+  padding: 0 16px 16px;
+}
+
+.card__row {
+  display: flex;
+  gap: 16px;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.card__left {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.card__meta {
+  color: var(--text-secondary);
+}
+
+.card__title {
+  color: var(--text);
+}
+
+.card:hover .card__meta {
+  color: var(--text);
+}
+
+.price {
+  font-family: var(--font-mono);
+  font-weight: 400;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.price__eur {
+  display: block;
+  color: var(--text-secondary);
+}
+
+/* Кружок со стрелкой — внешняя ссылка на магазин */
+.chip-arrow {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 48px;
+  background: var(--surface-subtle);
+  color: var(--text-secondary);
+  font-size: 16px;
+  transition:
+    background 0.4s var(--ease),
+    color 0.4s var(--ease);
+}
+
+.chip-arrow:hover {
+  background: var(--text);
+  color: var(--surface);
+}
+
+/* ── Статус брони ───────────────────────────────────────────────────── */
+
+.status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 12px;
+  color: var(--text-secondary);
+}
+
+.status__dot {
+  flex: none;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--free);
+}
+
+.status--busy .status__dot {
+  background: var(--text);
+}
+
+.status__text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ── Страница товара ────────────────────────────────────────────────── */
+
+.topbar {
+  padding: 24px 0 0;
+}
+
+.back {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 36px;
+  padding: 0 14px 0 10px;
+  border-radius: var(--radius-pill);
+  background: var(--surface);
+  color: var(--text-secondary);
+}
+
+.back:hover {
+  color: var(--text);
+}
+
+.product__head {
+  padding: 32px 0 24px;
+}
+
+.breadcrumb {
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 400;
+  color: var(--text-secondary);
+}
+
+.product__headrow {
+  display: flex;
+  gap: 24px;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-top: 8px;
+  flex-wrap: wrap;
+}
+
+.product__title {
+  margin: 0;
+  font-size: 40px;
+  line-height: 44px;
+  font-weight: 520;
+  letter-spacing: -0.02em;
+}
+
+.product__buy {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.product__price {
+  font-family: var(--font-mono);
+  font-size: 20px;
+  line-height: 26px;
+  text-align: right;
+}
+
+.product__price .price__eur {
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 36px;
+  padding: 0 14px;
+  border-radius: var(--radius-pill);
+  background: var(--text);
+  color: var(--surface);
+  white-space: nowrap;
+  transition:
+    background 0.4s var(--ease),
+    opacity 0.4s var(--ease);
+}
+
+.btn:hover {
+  background: var(--text-hover);
+}
+
+.btn:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.btn--ghost {
+  background: var(--surface);
+  color: var(--text);
+}
+
+.btn--ghost:hover {
+  background: var(--surface-subtle-2);
+}
+
+.product__hero {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: contain;
+  background: var(--surface);
+  border-radius: var(--radius-img);
+  padding: 24px;
+}
+
+.section {
+  padding: 56px 0 0;
+}
+
+.section h2 {
+  margin: 0 0 16px;
+  font-size: 32px;
+  line-height: 38px;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+}
+
+.section h3 {
+  margin: 0 0 16px;
+  font-size: 24px;
+  line-height: 30px;
+  font-weight: 500;
+}
+
+.prose {
+  max-width: 540px;
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 400;
+  color: var(--text-secondary);
+}
+
+/* ── Блок бронирования ──────────────────────────────────────────────── */
+
+.booking {
+  background: var(--surface);
+  border-radius: var(--radius-card);
+  padding: 24px;
+  max-width: 620px;
+}
+
+.booking__state {
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 400;
+  color: var(--text-secondary);
+}
+
+.people {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 16px;
+  padding: 0;
+  list-style: none;
+}
+
+.person {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 36px;
+  padding: 0 6px 0 14px;
+  border-radius: var(--radius-pill);
+  background: var(--surface-subtle);
+}
+
+.person__remove {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  color: var(--text-secondary);
+  font-size: 15px;
+  transition:
+    background 0.3s var(--ease),
+    color 0.3s var(--ease);
+}
+
+.person__remove:hover {
+  background: var(--surface-subtle-2);
+  color: var(--text);
+}
+
+.booking__form {
+  margin-top: 20px;
+}
+
+.field {
+  display: flex;
+  align-items: center;
+  height: 44px;
+  padding: 0 6px 0 16px;
+  border-radius: var(--radius-pill);
+  background: var(--surface-subtle);
+  max-width: 360px;
+}
+
+.field input {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  outline: none;
+  background: none;
+  color: var(--text);
+}
+
+.field input::placeholder {
+  color: var(--text-secondary);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.hint {
+  margin-top: 12px;
+  color: var(--text-secondary);
+}
+
+.hint--error {
+  color: var(--text);
+}
+
+/* ── Служебное ──────────────────────────────────────────────────────── */
+
+.footer {
+  padding: 64px 0 40px;
+  color: var(--text-secondary);
+}
+
+.loading {
+  padding: 120px 0;
+  text-align: center;
+  color: var(--text-secondary);
+}
+
+/* ── Админка ────────────────────────────────────────────────────────── */
+
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--surface);
+  border-radius: var(--radius-card);
+  overflow: hidden;
+}
+
+.admin-table th,
+.admin-table td {
+  text-align: left;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.admin-table th {
+  color: var(--text-secondary);
+  font-weight: 450;
+}
+
+.admin-table tr:last-child td {
+  border-bottom: none;
+}
+
+/* ── Мобильные ──────────────────────────────────────────────────────── */
+
+@media (max-width: 640px) {
+  .hero {
+    padding: 56px 0 40px;
+  }
+
+  .hero h1,
+  .product__title {
+    font-size: 32px;
+    line-height: 36px;
+  }
+
+  .product__headrow {
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  .product__buy {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .product__hero {
+    aspect-ratio: 1;
+    padding: 16px;
+  }
+
+  .section {
+    padding-top: 40px;
+  }
+
+  .section h2 {
+    font-size: 26px;
+    line-height: 32px;
+  }
+
+  .booking {
+    padding: 20px;
+  }
+}

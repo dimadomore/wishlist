@@ -1,0 +1,23 @@
+name = "wishlist"
+main = "worker/index.ts"
+compatibility_date = "2026-08-01"
+
+# Статика (собранный Vite-бандл). Worker сам раздаёт файлы,
+# всё что не /api/* и не найдено среди файлов — отдаёт index.html.
+[assets]
+directory = "./dist"
+binding = "ASSETS"
+not_found_handling = "single-page-application"
+
+# База броней. database_id подставляется после `wrangler d1 create wishlist-db`.
+[[d1_databases]]
+binding = "DB"
+database_name = "wishlist-db"
+database_id = "7ec3366e-cf24-4ca0-a7c5-566a8a407a28"
+
+# Секрет админки задаётся отдельно:
+#   npx wrangler secret put ADMIN_KEY
+# Локально — в .dev.vars
+
+[observability]
+enabled = true

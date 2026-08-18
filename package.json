@@ -1,0 +1,24 @@
+{
+  "name": "wishlist",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev",
+    "dev:web": "vite",
+    "build": "vite build",
+    "deploy": "npm run build && wrangler deploy",
+    "db:local": "wrangler d1 execute wishlist-db --local --file=./schema.sql",
+    "db:remote": "wrangler d1 execute wishlist-db --remote --file=./schema.sql",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20250109.0",
+    "typescript": "^5.7.3",
+    "vite": "^6.0.11",
+    "wrangler": "^4.124.0"
+  },
+  "dependencies": {
+    "@fontsource-variable/geist": "^5.1.0",
+    "@fontsource-variable/geist-mono": "^5.1.0"
+  }
+}
