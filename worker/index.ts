@@ -4,6 +4,7 @@ import products from "../products.json";
 interface Env {
   DB: D1Database;
   ASSETS: Fetcher;
+  ROOM: DurableObjectNamespace;
   ADMIN_KEY?: string;
 }
 
@@ -26,6 +27,44 @@ interface ProductBookings {
 
 const VALID_IDS = new Set(products.items.map((p) => p.id));
 const NAME_MAX = 40;
+
+/**
+ * Одна общая «комната» на весь сайт: держит открытые вкладки посетителей
+ * и рассылает им свежие брони, как только кто-то что-то занял или отменил.
+ *
+ * Соединения принимаются через acceptWebSocket (hibernation API): пока никто
+ * ничего не бронирует, объект спит и не тратит ресурсы, но сокеты живут.
+ */
+export class BookingsRoom {
+  constructor(private state: DurableObjectState) {}
+
+  async fetch(request: Request): Promise<Response> {
+    if (new URL(request.url).pathname === "/broadcast") {
+      const payload = await request.text();
+      for (const socket of this.state.getWebSockets()) {
+        try {
+          socket.send(payload);
+        } catch {
+          // Вкладку закрыли в этот самый момент — не мешает остальным.
+        }
+      }
+      return new Response(null, { status: 204 });
+    }
+
+    if (request.headers.get("Upgrade") !== "websocket") {
+      return new Response("Ожидается websocket.", { status: 426 });
+    }
+
+    const pair = new WebSocketPair();
+    this.state.acceptWebSocket(pair[1]);
+    return new Response(null, { status: 101, webSocket: pair[0] });
+  }
+
+  // Клиент шлёт ping, чтобы соединение не закрыли прокси по таймауту.
+  webSocketMessage(socket: WebSocket, message: string | ArrayBuffer): void {
+    if (message === "ping") socket.send("pong");
+  }
+}
 
 const json = (data: unknown, status = 200) =>
   new Response(JSON.stringify(data), {
@@ -118,8 +157,34 @@ async function createBooking(db: D1Database, productId: string, name: string, mo
   return "Не получилось забронировать, обнови страницу и попробуй ещё раз.";
 }
 
-async function handleApi(request: Request, env: Env, url: URL): Promise<Response> {
+function room(env: Env): DurableObjectStub {
+  return env.ROOM.get(env.ROOM.idFromName("wishlist"));
+}
+
+/** Разослать свежий снимок броней всем открытым вкладкам. */
+function broadcast(env: Env, ctx: ExecutionContext, bookings: Record<string, ProductBookings>) {
+  ctx.waitUntil(
+    room(env)
+      .fetch("https://room/broadcast", { method: "POST", body: JSON.stringify(bookings) })
+      .catch(() => {
+        // Рассылка — приятный бонус: если она не удалась, бронь всё равно сохранена,
+        // а вкладки подхватят изменения следующим опросом.
+      }),
+  );
+}
+
+async function handleApi(
+  request: Request,
+  env: Env,
+  url: URL,
+  ctx: ExecutionContext,
+): Promise<Response> {
   const path = url.pathname;
+
+  // Живое соединение: сюда подключаются вкладки посетителей.
+  if (path === "/api/live") {
+    return room(env).fetch(request);
+  }
 
   if (path === "/api/bookings") {
     if (request.method === "GET") {
@@ -138,7 +203,10 @@ async function handleApi(request: Request, env: Env, url: URL): Promise<Response
 
       const error = await createBooking(env.DB, productId, name, mode);
       if (error) return fail(409, error);
-      return json(await listBookings(env.DB), 201);
+
+      const bookings = await listBookings(env.DB);
+      broadcast(env, ctx, bookings);
+      return json(bookings, 201);
     }
 
     if (request.method === "DELETE") {
@@ -150,7 +218,10 @@ async function handleApi(request: Request, env: Env, url: URL): Promise<Response
       await env.DB.prepare("DELETE FROM bookings WHERE product_id = ?1 AND name_key = ?2")
         .bind(productId, name.toLowerCase())
         .run();
-      return json(await listBookings(env.DB));
+
+      const bookings = await listBookings(env.DB);
+      broadcast(env, ctx, bookings);
+      return json(bookings);
     }
 
     return fail(405, "Метод не поддерживается.");
@@ -179,6 +250,7 @@ async function handleApi(request: Request, env: Env, url: URL): Promise<Response
       const id = Number(body.id);
       if (!Number.isInteger(id)) return fail(400, "Нужен id брони.");
       await env.DB.prepare("DELETE FROM bookings WHERE id = ?1").bind(id).run();
+      broadcast(env, ctx, await listBookings(env.DB));
       return json({ ok: true });
     }
 
@@ -189,12 +261,12 @@ async function handleApi(request: Request, env: Env, url: URL): Promise<Response
 }
 
 export default {
-  async fetch(request: Request, env: Env): Promise<Response> {
+  async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
     const url = new URL(request.url);
 
     if (url.pathname.startsWith("/api/")) {
       try {
-        return await handleApi(request, env, url);
+        return await handleApi(request, env, url, ctx);
       } catch (err) {
         console.error("api error", err);
         return fail(500, "Что-то сломалось на сервере.");

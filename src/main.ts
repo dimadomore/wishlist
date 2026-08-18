@@ -4,6 +4,7 @@ import "./styles.css";
 
 import data from "../products.json";
 import { renderAdmin } from "./admin";
+import { connectLive } from "./live";
 import {
   type Bookings,
   type Product,
@@ -24,6 +25,10 @@ const byId = new Map(products.map((p) => [p.id, p]));
 
 const app = document.querySelector<HTMLDivElement>("#app")!;
 let bookings: Bookings = {};
+/** Какой подарок сейчас открыт — нужно, чтобы живые обновления знали, что перерисовать. */
+let openProduct: Product | null = null;
+/** Пока запрос в полёте, не даём фоновому обновлению подменить блок под руками. */
+let busy = false;
 
 /* ── Карточка товара ──────────────────────────────────────────────── */
 
@@ -66,7 +71,7 @@ function renderList(): void {
       <p>${esc(HERO_TEXT)}</p>
     </header>
     <main class="container">
-      <div class="grid">${products.map(cardHtml).join("")}</div>
+      <div class="grid" id="grid">${products.map(cardHtml).join("")}</div>
     </main>`;
 }
 
@@ -124,7 +129,7 @@ function bookingHtml(product: Product): string {
 }
 
 function renderProduct(product: Product): void {
-  const others = products.filter((p) => p.id !== product.id).slice(0, 3);
+  const others = relatedTo(product);
   const buy = product.url
     ? `<a class="btn" href="${esc(product.url)}" target="_blank" rel="noopener noreferrer">В магазин ↗</a>`
     : "";
@@ -157,7 +162,7 @@ function renderProduct(product: Product): void {
 
       <section class="section">
         <h3>Ещё из списка</h3>
-        <div class="grid">${others.map(cardHtml).join("")}</div>
+        <div class="grid" id="grid">${others.map(cardHtml).join("")}</div>
       </section>
     </main>
     <footer class="container footer">Хочешь что-то уточнить — просто напиши мне.</footer>`;
@@ -169,8 +174,36 @@ function renderProduct(product: Product): void {
 function refreshBooking(product: Product): void {
   const slot = document.querySelector<HTMLDivElement>("#booking-slot");
   if (!slot) return;
+
+  // Сохраняем то, что человек уже успел набрать: обновление могло прийти
+  // фоном, пока он вписывал своё имя.
+  const previous = document.querySelector<HTMLInputElement>("#booking-name");
+  const typed = previous?.value ?? "";
+  const wasFocused = document.activeElement === previous;
+
   slot.innerHTML = bookingHtml(product);
   wireBooking(product);
+
+  const input = document.querySelector<HTMLInputElement>("#booking-name");
+  if (input && typed) input.value = typed;
+  if (input && wasFocused) input.focus();
+}
+
+/** Приехало обновление от другого гостя — обновляем то, что видно на экране. */
+function applyUpdate(next: Bookings): void {
+  bookings = next;
+
+  const grid = document.querySelector<HTMLDivElement>("#grid");
+  if (grid) {
+    const shown = openProduct ? relatedTo(openProduct) : products;
+    grid.innerHTML = shown.map(cardHtml).join("");
+  }
+
+  if (openProduct && !busy) refreshBooking(openProduct);
+}
+
+function relatedTo(product: Product): Product[] {
+  return products.filter((p) => p.id !== product.id).slice(0, 3);
 }
 
 function wireBooking(product: Product): void {
@@ -206,12 +239,14 @@ function wireBooking(product: Product): void {
 
     form.querySelectorAll("button").forEach((b) => (b.disabled = true));
     setHint("Сохраняю…");
+    busy = true;
 
     const result = await postBooking(product.id, name, mode);
+    busy = false;
+
     if (result.ok) {
       localStorage.setItem("wishlist-name", name);
-      bookings = result.bookings;
-      refreshBooking(product);
+      applyUpdate(result.bookings);
     } else {
       form.querySelectorAll("button").forEach((b) => (b.disabled = false));
       setHint(result.error, true);
@@ -223,10 +258,12 @@ function wireBooking(product: Product): void {
       const name = button.dataset.remove ?? "";
       if (!confirm(`Убрать бронь «${name}»?`)) return;
       button.disabled = true;
+      busy = true;
       const result = await deleteBooking(product.id, name);
+      busy = false;
+
       if (result.ok) {
-        bookings = result.bookings;
-        refreshBooking(product);
+        applyUpdate(result.bookings);
       } else {
         button.disabled = false;
         setHint(result.error, true);
@@ -247,6 +284,7 @@ async function route(): Promise<void> {
 
   const match = path.match(/^\/p\/([^/]+)\/?$/);
   const product = match ? byId.get(decodeURIComponent(match[1])) : undefined;
+  openProduct = product ?? null;
 
   if (match && !product) {
     app.innerHTML = `<div class="container loading">Такого подарка нет.
@@ -274,5 +312,8 @@ document.addEventListener("click", (event) => {
 });
 
 window.addEventListener("popstate", () => void route());
+
+// Пока вкладка открыта, чужие брони прилетают сами.
+connectLive(applyUpdate);
 
 void route();
