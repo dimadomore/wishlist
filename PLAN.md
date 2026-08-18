@@ -118,6 +118,11 @@ CREATE UNIQUE INDEX idx_unique_name ON bookings(product_id, name);
 
 ## 5. Товары и цены
 
+> ⚠️ Таблица ниже — снимок на момент планирования. Актуальные товары и цены живут
+> в [products.json](products.json); 18.08.2026 цены магазина mukama.com были пересчитаны
+> на молдавские (магазин финский и для доставки за пределы ЕС снимает местный НДС),
+> добавлены MacBook Pro 14 и Hario V60, кофе заменён на Mad Heads.
+
 Курс зафиксирован 2026-08-18 (open.er-api.com): **USD→MDL 17.27, EUR→MDL 20.02, USD→EUR 0.863**. Пересчитанные цены округлены. Полные данные и URL картинок: [docs/products-research.md](docs/products-research.md).
 
 | # | Товар | Цена ориг. | MDL | EUR | Ссылка |

@@ -20,6 +20,19 @@
   },
   "items": [
     {
+      "id": "macbook-pro-14",
+      "title": "MacBook Pro 14, M5 Pro",
+      "brand": "Apple",
+      "category": "Техника",
+      "description": "MacBook Pro 14 (2026) в цвете Silver: чип M5 Pro, 24 ГБ памяти, SSD на 1 ТБ, экран Liquid Retina XDR.",
+      "url": "https://xstore.md/apple/macbook/apple-macbook-pro-14-2026-mgdn4-silver-14-2-m5-pro-15c16g-24gb-ram-1tb-ssd",
+      "image": "/images/macbook-pro-14.jpg",
+      "sourceImage": "https://xstore.md/images/product/2026/03/apple-macbook-pro-14-2026-mgdn4-silver-xstore-md-10.jpg",
+      "priceMdl": 57999,
+      "priceEur": 2897,
+      "hidden": false
+    },
+    {
       "id": "xbloom-studio",
       "title": "xBloom Studio",
       "brand": "xBloom",
@@ -59,14 +72,27 @@
       "hidden": false
     },
     {
-      "id": "specialty-coffee",
-      "title": "Кофе в зёрнах, спешелти",
-      "brand": "Спешелти",
+      "id": "hario-v60-server",
+      "title": "Hario V60 Range Server 01, 360 мл",
+      "brand": "Hario",
       "category": "Кофе",
-      "description": "Пачка зерна светлой обжарки под фильтр, 250 г. Любой хороший обжарщик — чем свежее дата обжарки, тем лучше.",
+      "description": "Стеклянный сервер-декантер из жаропрочного стекла: ставится под воронку V60, объём 360 мл — на одну-три чашки. Артикул XGSR-36-TB.",
       "url": null,
-      "image": "/images/specialty-coffee.webp",
-      "sourceImage": "https://cdn.shopify.com/s/files/1/1707/3261/files/geometry-10oz-v2.webp",
+      "image": "/images/hario-v60-server.jpg",
+      "sourceImage": "https://www.globalkitchenjapan.com/cdn/shop/files/HarioV60HeatResistantGlassCoffeeServerTransparent_1.jpg",
+      "priceMdl": 600,
+      "priceEur": 30,
+      "hidden": false
+    },
+    {
+      "id": "specialty-coffee",
+      "title": "Кофе Mad Heads, 250 г",
+      "brand": "Mad Heads",
+      "category": "Кофе",
+      "description": "Зерно от киевских обжарщиков Mad Heads: пачка 250 г светлой обжарки под фильтр. Любая позиция подойдёт — чем свежее дата обжарки, тем лучше.",
+      "url": null,
+      "image": "/images/madheads-coffee.jpg",
+      "sourceImage": "https://api.madheadscoffee.com/cdn/s/1/p/205238/0/original.png",
       "priceMdl": null,
       "priceEur": null,
       "hidden": false
@@ -132,8 +158,8 @@
       "url": "https://www.mukama.com/products/bellroy-apex-note-sleeve-wallet",
       "image": "/images/bellroy-apex.jpg",
       "sourceImage": "https://cdn.shopify.com/s/files/1/0671/4592/4843/files/40342.jpg",
-      "priceMdl": 3500,
-      "priceEur": 175,
+      "priceMdl": 2837,
+      "priceEur": 142,
       "hidden": false
     },
     {
@@ -145,8 +171,8 @@
       "url": "https://www.mukama.com/products/bellroy-coin-wallet?variant=44404958593259",
       "image": "/images/bellroy-coin.jpg",
       "sourceImage": "https://cdn.shopify.com/s/files/1/0671/4592/4843/files/23026.jpg",
-      "priceMdl": 2180,
-      "priceEur": 109,
+      "priceMdl": 1767,
+      "priceEur": 88,
       "hidden": false
     },
     {
@@ -158,8 +184,8 @@
       "url": "https://www.mukama.com/products/orbitkey-toiletry-pouch?variant=56273100276091",
       "image": "/images/orbitkey-pouch.jpg",
       "sourceImage": "https://cdn.shopify.com/s/files/1/0671/4592/4843/files/orbitkey-toiletry-pouch-10eim1.jpg",
-      "priceMdl": 900,
-      "priceEur": 45,
+      "priceMdl": 728,
+      "priceEur": 36,
       "hidden": false
     },
     {
@@ -177,13 +203,13 @@
     },
     {
       "id": "socks-nike",
-      "title": "Носки Nike Run Lightweight, S",
+      "title": "Носки Nike Run Lightweight, M",
       "brand": "Nike",
       "category": "Носки",
-      "description": "Лёгкие беговые носки Nike Run, белые, размер S.",
-      "url": "https://sportlandia.md/ru/noski-nike-run-lightweight-179409",
-      "image": "/images/socks-nike.avif",
-      "sourceImage": "https://sportlandia.md/image/cache/avif/catalog/products/00/IB6114-100/1-700x700.avif",
+      "description": "Лёгкие беговые носки Nike Run, белые, размер M (39–42).",
+      "url": "https://sportlandia.md/ru/noski-nike-run-lightweight-179410",
+      "image": "/images/socks-nike.jpg",
+      "sourceImage": "https://sportlandia.md/image/cache/catalog/products/00/IB6114-100/1-700x700.jpg",
       "priceMdl": 399,
       "priceEur": 20,
       "hidden": false
@@ -197,8 +223,8 @@
       "url": "https://reworkgear.com/products/outbound-travel-pack-30l",
       "image": "/images/rework-outbound-30l.jpg",
       "sourceImage": "https://cdn.shopify.com/s/files/1/0772/9142/1988/files/P1015654-Edit.jpg",
-      "priceMdl": 3610,
-      "priceEur": 180,
+      "priceMdl": 3639,
+      "priceEur": 182,
       "hidden": false
     }
   ]
