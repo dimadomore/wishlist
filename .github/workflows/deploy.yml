@@ -1,7 +1,8 @@
 name: Deploy
 
-# Пуш в main — сайт выкатывается на Cloudflare.
-# Пока в репозитории нет секрета CLOUDFLARE_API_TOKEN, задача просто пропускается.
+# Пуш в main собирает сайт и выкатывает его на Cloudflare.
+# Пока в репозитории нет секрета CLOUDFLARE_API_TOKEN, выкатка пропускается,
+# а сборка всё равно прогоняется — как проверка, что ничего не сломано.
 on:
   push:
     branches: [main]
@@ -9,8 +10,9 @@ on:
 
 jobs:
   deploy:
-    if: ${{ secrets.CLOUDFLARE_API_TOKEN != '' }}
     runs-on: ubuntu-latest
+    env:
+      CF_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -18,7 +20,10 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
+      - run: npm run typecheck
       - run: npm run build
-      - uses: cloudflare/wrangler-action@v3
+      - name: Выкатить на Cloudflare
+        if: env.CF_TOKEN != ''
+        uses: cloudflare/wrangler-action@v3
         with:
-          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          apiToken: ${{ env.CF_TOKEN }}
