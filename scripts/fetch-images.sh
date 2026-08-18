@@ -30,6 +30,7 @@ fetch hario-v60-server.jpg          "https://www.globalkitchenjapan.com/cdn/shop
 fetch rad-one-v2.png                "https://cdn.shopify.com/s/files/1/0579/5820/3571/files/0226-OV2WHG_01_02_WHITE_GUM_SIDE_02.png?v=1781012356&width=1200"
 fetch thorne-multivitamin-elite.png "https://d1vo8zfysxy97v.cloudfront.net/media/product/vm114__vdadbc3e6f8ea5ada4b8684fc62234a4b9c574489.png"
 fetch tent-2p.jpg                   "https://cdn.shopify.com/s/files/1/0490/8954/4346/files/naturehike_cloud_up_2_person_ultralight_backpacking_tent_main_white.jpg?v=1764660123&width=1200"
+fetch petanque-set.jpg              "https://cdn.shopify.com/s/files/1/0553/5585/files/ChatGPT_Image_Jan_14_2026_12_00_53_PM.jpg?width=1000"
 fetch carpisa-suitcase.jpg          "https://carpisa.md/images/product/2023/04/VAA505SS94202201_01_basechild.jpg"
 fetch bellroy-apex.jpg              "https://cdn.shopify.com/s/files/1/0671/4592/4843/files/40342.jpg?v=1714110564&width=1200"
 fetch bellroy-coin.jpg              "https://cdn.shopify.com/s/files/1/0671/4592/4843/files/23026.jpg?v=1716490081&width=1200"

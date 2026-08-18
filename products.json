@@ -137,6 +137,19 @@
       "hidden": false
     },
     {
+      "id": "petanque-set",
+      "title": "Набор для игры в петанк",
+      "brand": "Петанк",
+      "category": "Игры",
+      "description": "Французская игра: металлические шары с насечкой, деревянный кошонет и чехол. Идеально во двор, на дачу или на пляж.",
+      "url": null,
+      "image": "/images/petanque-set.jpg",
+      "sourceImage": "https://cdn.shopify.com/s/files/1/0553/5585/files/ChatGPT_Image_Jan_14_2026_12_00_53_PM.jpg",
+      "priceMdl": null,
+      "priceEur": null,
+      "hidden": false
+    },
+    {
       "id": "carpisa-suitcase",
       "title": "Чемодан Carpisa Gunmetal",
       "brand": "Carpisa",
